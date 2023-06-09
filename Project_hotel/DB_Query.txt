@@ -1,0 +1,21 @@
+create table RoomDB( //필수 속성 기타 속성 구별
+rno number primary key,
+room_type varchar2(10),
+room_clean varchar2(10),
+dns_check varchar2(10), // trigger
+check_in varchar2(10), //필수 속성 trigger
+room_price number,
+max_value number
+);
+
+create table CustomerDB(
+cno varchar2(20) primary key,
+cname varchar2(30), 
+cphone varchar2(13), 
+cemail varchar2(30),
+in_date DATE,
+out_date DATE,
+rsv_total number,
+rno number
+);
+rno varchar(10) foreign key 설정
