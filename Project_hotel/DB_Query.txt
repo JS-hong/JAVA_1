@@ -1,11 +1,16 @@
-create table RoomDB( //필수 속성 기타 속성 구별
+create table RoomDB(
 rno number primary key,
 room_type varchar2(10),
-room_clean varchar2(10),
-dns_check varchar2(10), // trigger
-check_in varchar2(10), //필수 속성 trigger
 room_price number,
 max_value number
+);
+
+create table RoomHistoryDB(
+rno number not null,
+room_clean varchar2(10),
+dns_check varchar2(10),
+check_in varchar2(10),
+CONSTRAINT fk_rno foreign key(rno) references RoomDB(rno)
 );
 
 create table CustomerDB(
@@ -16,8 +21,19 @@ cemail varchar2(30),
 in_date DATE,
 out_date DATE,
 rsv_total number,
-CONSTRAINT rno FOREIGN KEY(rno)
-REFERENCES RoomDB(rno) ON DELETE CASCADE
+rno varchar(10) foreign key
 );
 
-rno varchar(10) foreign key 설정
+
+ALTER TABLE RoomHistoryDB
+ADD CONSTRAINT fk_rno foreign KEY(rno) references RoomDB(rno);
+
+CONSTRAINT rno FOREIGN KEY(rno)
+REFERENCES roomdb(rno) ON DELETE CASCADE
+
+
+create sequence cusomer_seq start with 1 increment by 1 NO CYCLE;
+alter sequence memo_seq maxvalue 1000;
+
+drop sequence cusomer_seq
+
