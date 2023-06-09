@@ -16,6 +16,8 @@ cemail varchar2(30),
 in_date DATE,
 out_date DATE,
 rsv_total number,
-rno number
+CONSTRAINT rno FOREIGN KEY(rno)
+REFERENCES RoomDB(rno) ON DELETE CASCADE
 );
+
 rno varchar(10) foreign key 설정
