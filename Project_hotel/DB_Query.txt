@@ -10,7 +10,7 @@ rno number not null,
 room_clean varchar2(10),
 dns_check varchar2(10),
 check_in varchar2(10),
-CONSTRAINT fk_rno foreign key(rno) references RoomDB(rno)
+CONSTRAINT fk1_rno foreign key(rno) references RoomDB(rno)
 );
 
 create table CustomerDB(
@@ -21,7 +21,7 @@ cemail varchar2(30),
 in_date DATE,
 out_date DATE,
 rsv_total number,
-rno varchar(10) foreign key
+CONSTRAINT fk2_rno foreign key(rno) references RoomDB(rno)
 );
 
 
