@@ -1,11 +1,11 @@
-create table RoomDB(
+create table Room(
 rno number primary key,
 room_type varchar2(10),
 room_price number,
 max_value number
 );
 
-create table RoomHistoryDB(
+create table RoomHistory(
 rno number not null,
 room_clean varchar2(10),
 dns_check varchar2(10),
@@ -13,7 +13,7 @@ check_in varchar2(10),
 CONSTRAINT fk1_rno foreign key(rno) references RoomDB(rno)
 );
 
-create table CustomerDB(
+create table Customer(
 cno varchar2(20) primary key,
 cname varchar2(30), 
 cphone varchar2(13), 
