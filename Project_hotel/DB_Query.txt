@@ -1,19 +1,19 @@
-create table RoomDB(
+create table Room(
 rno number primary key,
 room_type varchar2(10),
 room_price number,
 max_value number
 );
 
-create table RoomHistoryDB(
+create table RoomHistory(
 rno number not null,
 room_clean varchar2(10),
 dns_check varchar2(10),
 check_in varchar2(10),
-CONSTRAINT fk_rno foreign key(rno) references RoomDB(rno)
+CONSTRAINT fk1_rno foreign key(rno) references RoomDB(rno)
 );
 
-create table CustomerDB(
+create table Customer(
 cno varchar2(20) primary key,
 cname varchar2(30), 
 cphone varchar2(13), 
@@ -21,7 +21,7 @@ cemail varchar2(30),
 in_date DATE,
 out_date DATE,
 rsv_total number,
-rno varchar(10) foreign key
+CONSTRAINT fk2_rno foreign key(rno) references RoomDB(rno)
 );
 
 
@@ -36,4 +36,55 @@ create sequence cusomer_seq start with 1 increment by 1 NO CYCLE;
 alter sequence memo_seq maxvalue 1000;
 
 drop sequence cusomer_seq
+
+
+Trigger
+Create or replace trigger insert_sum_price(가격 추가 트리거)
+after insert on HotelFoodOrder
+for each row
+begin
+update CoustomerDB set rsv_total = rsv_total+:new.price
+where rno = :new.rno ;
+end;
+
+Create or replace trigger delete_checkout//입실했을때 방상태 변경하는 트리거
+after insert on CustomerDB // customerdb 에서 업데이트 됐을때 변경
+for each row
+begin
+update RoomHistoryDB set (room_clean,check_in)=("dirty",1) 
+where rno = :new.rno ;
+end;
+
+Create or replace trigger delete_checkout//퇴실했을때 방상태 변경하는 트리거
+after delete on CustomerDB // customerdb 에서 업데이트 됐을때 변경
+for each row
+begin
+update RoomHistoryDB set (room_clean,check_in)=("dirty",0) 
+where rno = :new.rno ;
+end;
+
+Create or replace trigger update_chroom(룸 체인지 했을때 원래 방 상태 변경하는 트리거)
+after update on CustomerDB // customerdb 에서 업데이트 됐을때 변경
+for each row
+begin
+update CoustomerDB set rsv_total = rsv_total+:new.price
+where rno = :new.rno ;
+end;
+
+
+Create or replace trigger insert_dns/DNS 방 등록됐을때 체크하는 트리거
+after insert on HotelDns // dns 에서 업데이트 됐을때 변경
+for each row
+begin
+update CoustomerDB set dns_check = "1" 
+where rno = :new.rno ;
+end;
+
+Create or replace trigger insert_dns //dns 방 해제 했을때 쓰는 트리거
+after delete on HotelDns // dns 에서 업데이트 됐을때 변경
+for each row
+begin
+update CoustomerDB set dns_check = "0" 
+where rno = :new.rno ;
+end;
 
