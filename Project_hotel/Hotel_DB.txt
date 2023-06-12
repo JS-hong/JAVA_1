@@ -1,0 +1,26 @@
+create table Room(
+rno number primary key,
+room_type varchar2(10),
+room_price number,
+max_value number
+);
+
+create table RoomHistory(
+rno number not null,
+room_clean varchar2(10),
+dns_check varchar2(10),
+check_in varchar2(10),
+CONSTRAINT fk1_rno foreign key(rno) references Room(rno)
+REFERENCES room(rno) on delete cascade
+);
+
+create table Customer(
+rno number not null,
+cname varchar2(30), 
+cphone varchar2(13), 
+cemail varchar2(30),
+in_date DATE,
+out_date DATE,
+rsv_total number,
+CONSTRAINT fk2_rno foreign key(rno) references Room(rno)
+);

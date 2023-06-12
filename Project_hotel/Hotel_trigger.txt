@@ -1,0 +1,56 @@
+Create or replace trigger insert_room//방 추가
+AFTER insert on room
+for each row
+begin
+insert into roomhistory(rno,room_clean,dns_check,check_in) 
+values(:new.rno,'inspect','0','0');
+END;
+
+Create or replace trigger insert_sum_price	//가격 추가 트리거)
+after insert on HotelFoodOrder
+for each row
+begin
+update CoustomerDB set rsv_total = rsv_total+:new.price
+where rno = :new.rno ;
+end;
+
+Create or replace trigger insert_checkin	//입실했을때 방상태 변경하는 트리거
+after insert on Customer
+for each row
+begin
+update RoomHistory set room_clean='dirty',check_in='1' 
+where rno = :new.rno;
+end;
+
+Create or replace trigger delete_checkout	//퇴실했을때 방상태 변경하는 트리거
+after delete on Customer 		// customerdb 에서 업데이트 됐을때 변경
+for each row
+begin
+update RoomHistory set check_in=0 
+where rno=:new.rno;
+end;
+
+Create or replace trigger update_chroom(룸 체인지 했을때 원래 방 상태 변경하는 트리거)
+after update on CustomerDB // customerdb 에서 업데이트 됐을때 변경
+for each row
+begin
+update CoustomerDB set rsv_total = rsv_total+:new.price
+where rno = :new.rno;
+end;
+
+
+Create or replace trigger insert_dns/DNS 방 등록됐을때 체크하는 트리거
+after insert on HotelDns // dns 에서 업데이트 됐을때 변경
+for each row
+begin
+update CoustomerDB set dns_check = '1'
+where rno = :new.rno;
+end;
+
+Create or replace trigger insert_dns //dns 방 해제 했을때 쓰는 트리거
+after delete on HotelDns // dns 에서 업데이트 됐을때 변경
+for each row
+begin
+update CoustomerDB set dns_check = "0" 
+where rno = :new.rno ;
+end;
