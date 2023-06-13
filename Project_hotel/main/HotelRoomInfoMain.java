@@ -11,6 +11,7 @@ import hotel.vo.HotelRoomInfoVO;
 
 public class HotelRoomInfoMain {//RoomDB 방관련 입니다~~
 	private static Scanner sc;
+	private statuc String sessionemp;
 	private HotelRoomInfoVO rivo;
 	private HotelRoomInfoDAO ridao;
 	public static int session=0;
@@ -132,7 +133,8 @@ public class HotelRoomInfoMain {//RoomDB 방관련 입니다~~
 		}
 	infomain();	
 	}	
-	public void infomain(){//객실 관리
+	public void infomain(String stremp){//객실 관리
+		sessionemp = stremp;
 		HotelRoomInfoMain sm = new HotelRoomInfoMain();
 		System.out.println("==========객실 관리==========");
 		System.out.println("1:체크인 접수");
