@@ -166,8 +166,12 @@ public class HotelRoomInfoMain {//RoomDB 방관련 입니다~~
 			room_change();
 			break;
 		case 7:
-			sc.close();
-			System.exit(0);
+			if(){
+
+			}
+			else{
+
+			}
 			break;
 		}
 	}	
