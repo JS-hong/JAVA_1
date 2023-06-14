@@ -66,7 +66,7 @@ end;
 
 //dns 방 해제 했을때 쓰는 트리거
 // dns 에서 업데이트 됐을때 변경
-Create or replace trigger insert_dns
+Create or replace trigger delete_dns
 after delete on HotelDns
 declare
 dns_1 number
