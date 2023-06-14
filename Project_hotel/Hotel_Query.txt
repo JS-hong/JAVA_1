@@ -65,3 +65,16 @@ where rno=?;
 4.객실 추가
 5.객실 삭제
 
+
+select r.rno,c.cname,nvl(to_char(c.in_date,'YYYY-MM-DD'),'0000-00-00'),nvl(to_char(c.out_date,'YYYY-MM-DD'),'0000-00-00'),r.room_clean,
+CASE r.check_in WHEN '0' THEN '공실' ELSE '재실' END,
+CASE r.dns_check WHEN '0' THEN 'O' ELSE 'X' END
+from customer c RIGHT OUTER JOIN roomhistory r
+on c.rno = r.rno order by rno asc;
+
+
+select r.rno,c.cname,c.in_date,c.out_date,r.room_clean,
+CASE check_in WHEN '0' THEN '공실' ELSE '재실' END,
+CASE r.dns_check WHEN '0' THEN 'X' ELSE 'O' END
+from customer c RIGHT OUTER JOIN roomhistory r
+on c.rno = r.rno order by rno asc;

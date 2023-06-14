@@ -9,6 +9,8 @@ public class HotelRoomInfoVO {
 	private String cemail;
 	private Date cin_date;
 	private Date cout_date;
+	private String cin_date1;
+	private String cout_date1;
 	private int roomservice_total;
 	private int rno;
 	private String check_in;
@@ -82,4 +84,17 @@ public class HotelRoomInfoVO {
 	public void setRno(int rno) {
 		this.rno = rno;
 	}
+	public String getCin_date1() {
+		return cin_date1;
+	}
+	public void setCin_date1(String cin_date1) {
+		this.cin_date1 = cin_date1;
+	}
+	public String getCout_date1() {
+		return cout_date1;
+	}
+	public void setCout_date1(String cout_date1) {
+		this.cout_date1 = cout_date1;
+	}
+
 }

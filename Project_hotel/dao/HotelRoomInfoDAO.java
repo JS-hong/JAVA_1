@@ -54,12 +54,14 @@ public class HotelRoomInfoDAO {//
 		}		
 		return true;
 	}
-	
-	
 	public ArrayList<HotelRoomInfoVO> check_roomlist() {//전체 객실 예약 정보 select
 		ArrayList<HotelRoomInfoVO> check_roomList = new ArrayList<>();
 		try {
-			sql = "select r.rno,c.cname,c.in_date,c.out_date,r.room_clean,r.check_in,r.dns_check "
+			sql = "select r.rno,NVL(c.cname,'N/A'), "
+					+ "nvl(to_char(c.in_date,'YYYY-MM-DD'),'0000-00-00'),"
+					+ "nvl(to_char(c.out_date,'YYYY-MM-DD'),'0000-00-00'),r.room_clean, "
+					+ "CASE r.check_in WHEN '0' THEN '공실' ELSE '재실' END,"
+					+ "CASE r.dns_check WHEN '0' THEN 'X' ELSE 'O' END "
 					+ "from customer c RIGHT OUTER JOIN roomhistory r "
 					+ "on c.rno = r.rno order by rno asc ";//구문 채우기
 			pstmt = DBConn.getConnection().prepareStatement(sql);
@@ -68,8 +70,12 @@ public class HotelRoomInfoDAO {//
 				hrivo = new HotelRoomInfoVO();
 				hrivo.setRno((rs.getInt(1)));	
 				hrivo.setCname((rs.getString(2)));
-				hrivo.setCin_date((rs.getDate(3)));
-				hrivo.setCout_date((rs.getDate(4)));
+				//hrivo.setCin_date((rs.getDate(3)));
+				//hrivo.setCout_date((rs.getDate(4)));
+				
+				hrivo.setCin_date1((rs.getString(3)));
+				hrivo.setCout_date1((rs.getString(4)));
+				
 				hrivo.setRoom_clean((rs.getString(5)));
 				hrivo.setCheck_in((rs.getString(6)));
 				hrivo.setDns_check((rs.getString(7)));
@@ -85,9 +91,13 @@ public class HotelRoomInfoDAO {//
 	public ArrayList<HotelRoomInfoVO> check_room(int num) {//객실별 예약정보 조회
 		ArrayList<HotelRoomInfoVO> checkcustomer = new ArrayList<>();
 		try {
-			sql = "select r.rno,c.cname,c.in_date,c.out_date,r.room_clean,r.check_in,r.dns_check "
+			sql = "select r.rno,NVL(c.cname,'N/A'), "
+					+ "nvl(to_char(c.in_date,'YYYY-MM-DD'),'0000-00-00'),"
+					+ "nvl(to_char(c.out_date,'YYYY-MM-DD'),'0000-00-00'),r.room_clean, "
+					+ "CASE r.check_in WHEN '0' THEN '공실' ELSE '재실' END,"
+					+ "CASE r.dns_check WHEN '0' THEN 'X' ELSE 'O' END "
 					+ "from customer c RIGHT OUTER JOIN roomhistory r "
-					+ "on c.rno = r.rno where r.rno=? ";	
+					+ "on c.rno = r.rno where r.rno=? ";//구문 채우기
 			pstmt = DBConn.getConnection().prepareStatement(sql);
 			pstmt.setInt(1,num);
 			rs = pstmt.executeQuery();	
@@ -96,8 +106,10 @@ public class HotelRoomInfoDAO {//
 				hrivo = new HotelRoomInfoVO();
 				hrivo.setRno((rs.getInt(1)));	
 				hrivo.setCname((rs.getString(2)));
-				hrivo.setCin_date((rs.getDate(3)));
-				hrivo.setCout_date((rs.getDate(4)));
+				//hrivo.setCin_date((rs.getDate(3)));
+				//hrivo.setCout_date((rs.getDate(4)));
+				hrivo.setCin_date1((rs.getString(3)));
+				hrivo.setCout_date1((rs.getString(4)));
 				hrivo.setRoom_clean((rs.getString(5)));
 				hrivo.setCheck_in((rs.getString(6)));
 				hrivo.setDns_check((rs.getString(7)));

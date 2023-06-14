@@ -19,9 +19,9 @@ public class HotelRoomControlMain {
 	}
 	
 	public void room_list(){//객실 전체 목록 조회
-		System.out.println("\n------------------------------------------");
-		System.out.println("                  LOOM LIST   ");
-		System.out.println("------------------------------------------");
+		System.out.println("=====================================================================================");
+		System.out.println("                              LOOM LIST   ");
+		System.out.println("=====================================================================================");
 		
 		ArrayList<HotelRoomControlVO> rcvList = rcdao.room_list();
 		
@@ -65,6 +65,7 @@ public class HotelRoomControlMain {
 				Roomcontrolmain();
 				break;
 			default:
+				search_room();
 				System.out.println("다시 입력");
 				break;
 			}
@@ -116,11 +117,15 @@ public class HotelRoomControlMain {
 	}	
 	public void Roomcontrolmain() {
 		HotelRoomInfoMain hm = new HotelRoomInfoMain();
-		System.out.println("==========객실 정보 관리==========");
+		HotelMain hmain = new HotelMain();
+		System.out.println("=====================================================================================");
+		System.out.println("                                 객실 정보 관리");
+		System.out.println("=====================================================================================");
 		System.out.println("1:객실 전체 목록 조회");
 		System.out.println("2:개별 객실 조회");
 		System.out.println("3:객실 추가");
 		System.out.println("4:뒤로가기");
+		System.out.print(" 입력>> ");
 		int num = sc.nextInt();	
 		switch (num) {
 		case 1:	
@@ -133,13 +138,12 @@ public class HotelRoomControlMain {
 			insert_room();
 			break;
 		case 4:
-			sc.close();
-			System.exit(0);
+			hmain.menuadmin();
+			break;
+		default:
+			System.out.println("다시 입력하세요");
+			Roomcontrolmain();
 			break;
 		}
-	}
-	public static void main(String[] args) {
-		HotelRoomControlMain im = new HotelRoomControlMain();
-		im.Roomcontrolmain();
 	}
 }
