@@ -6,10 +6,6 @@ import java.util.Scanner;
 import hotel.dao.HotelDnsDAO;
 import hotel.vo.HotelDnsVO;
 
-
-
-
-
 public class HotelDnsMain {
 	private Scanner sc;
 	private HotelDnsDAO ddao;
@@ -23,8 +19,7 @@ public class HotelDnsMain {
 		ddao=new HotelDnsDAO();
 		dvo=new HotelDnsVO();
 	}
-	
-	
+
 	public void dnsmenu(String sessioncode,String sessionjob) {
 		dnscode=sessioncode;
 		dnsjob=sessionjob;
@@ -46,7 +41,10 @@ public class HotelDnsMain {
 				hmain.menuadmin();
 			}else if(dnsjob.equals("EMP")) {//로그인 한 사람이 직원이라면
 				hmain.menuemp();
-			}
+			}break;
+		default :
+			System.out.println("다시 입력해 주세요.");
+			dnsmenu(dnscode,dnsjob);
 		}
 		
 	}
@@ -56,14 +54,17 @@ public class HotelDnsMain {
 		System.out.println("                                   DNS 등록   ");
 		System.out.println("=====================================================================================");
 		System.out.print("방호수 입력 :");
-		dvo.setRno(sc.nextInt());
+		int roomnum=sc.nextInt();
+		sc.nextLine();
 		System.out.print("등록사유:");
-		dvo.setDreason(sc.next());
-		System.out.println();
+		dvo.setDreason(sc.nextLine());
+		
 		dvo.setEcode(dnscode);
 		
-		boolean result;
-		result = ddao.dnsinsert(dvo);
+		if(roomnum >=1001 && roomnum <= 1010) {
+		dvo.setRno(roomnum);	
+		boolean result = ddao.dnsinsert(dvo);
+		
 		if(result==true) {
 			System.out.println("등록완료");
 			dnsmenu(dnscode,dnsjob);
@@ -71,6 +72,10 @@ public class HotelDnsMain {
 			System.out.println("등록실패");
 			dnsjoin();
 		}	
+		}else {
+		System.out.println("다시 입력해 주세요.");
+		dnsjoin();
+		}
 	}
 	
 	public void dnslist() {
@@ -80,10 +85,9 @@ public class HotelDnsMain {
 		List<HotelDnsVO> dvolist=ddao.dnslist();
 		
 		if(dvolist.size()>0) {
-			System.out.println(" 번호\t방번호\t사유\t\t작성자\t작성일자");
+			System.out.println(" 방번호\t작성자\t작성일자\t\t사유");
 			for (HotelDnsVO dvo : dvolist) {
-				System.out.println(" "+dvo.getDno()+"\t"+dvo.getRno()+
-						"\t"+dvo.getDreason()+"\t\t"+dvo.getEcode()+"\t"+dvo.getDnsdate());			
+				System.out.println(" "+dvo.getRno()+"\t"+dvo.getEname()+"\t"+dvo.getDnsdate()+"\t"+dvo.getDreason());			
 			} 
 			System.out.println("=====================================================================================");
 			System.out.println("1.상세보기   2.뒤로가기  ");
@@ -106,11 +110,11 @@ public class HotelDnsMain {
 		System.out.println("=====================================================================================");
 		System.out.println("                                 DNS DETAIL   ");
 		System.out.println("=====================================================================================");
-		System.out.print("조회 할 DNS 방번호:");
+		System.out.print("조회 할 방번호:");
 		int no=sc.nextInt();
 		dvo=ddao.dnsdetail(no);
 		if(dvo != null) {
-			System.out.println("     등록번호 : "+dvo.getDno());
+			//System.out.println("     등록번호 : "+dvo.getDno());
 			System.out.println("     방호수 : "+dvo.getRno());
 			System.out.println("     사유 : "+dvo.getDreason());
 			System.out.println("     작성자 : "+dvo.getEname());
@@ -144,7 +148,8 @@ public class HotelDnsMain {
 		System.out.print(" 객실 호수를 입력하세요: ");
 		dvo.setRno(sc.nextInt());
 		System.out.print(" 수정할 내용을 입력하세요: ");
-		dvo.setDreason(sc.next());
+		sc.nextLine();
+		dvo.setDreason(sc.nextLine());
 		System.out.println();
 		dvo.setEcode(dnscode);
 		
@@ -162,7 +167,7 @@ public class HotelDnsMain {
 		char yon=sc.next().charAt(0);
 		switch(yon) {
 		case 'y': case 'Y':
-			ddao.dnsdelete(dvo.getDno());
+			ddao.dnsdelete(dvo.getRno());
 			System.out.println("=====================================================================================");
 			System.out.println("          삭제되었습니다.");
 			dnslist();

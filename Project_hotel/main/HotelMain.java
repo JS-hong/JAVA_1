@@ -1,4 +1,5 @@
 package hotel.main;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -52,9 +53,11 @@ public class HotelMain {
 		switch(a) {
 		case 1: login(); break;
 		case 2:
+			
 			System.out.println("=====================================================================================");
-			System.out.println("      프로그램을 종료합니다.     ");
+			System.out.println("      시스템을 종료합니다.     ");
 			sc.close();
+			//DBConn.close();
 			System.exit(0);
 		default:
 			System.out.println("다시 입력해주세요");
@@ -111,8 +114,8 @@ public class HotelMain {
 		case 2: dmain.dnsmenu(sessioncode, sessionjob); break;
 		case 3: fomain.menu(sessionjob, sessioncode);  break;
 		case 4: crmain.menu(sessioncode, sessionjob); break;
-		case 5: nmain.detailemp(); break;
-		case 6: logout();
+		case 5: nmain.listemp(); break;
+		case 6: logout();break;
 		default: 
 			System.out.println("  다시 입력해 주세요.");
 			menuemp();
@@ -141,17 +144,20 @@ public class HotelMain {
 		    sessioncode=code;
 			sessionjob="EMP";
 		    menuemp();
-		}else {
-			System.out.println("   로그인 실패");
+		}else if(edao.login(code,phone).equals("a")){
+			System.out.println("   로그인 실패! 다시 입력해주세요");
 			login();
 		}
 		
 	}
+
 	public void logout() {//로그아웃
 		sessioncode=null;
 		sessionjob=null;
-		
+		System.out.println("=====================================LOGOUT=========================================");
+		System.out.println("계정이 로그아웃 되었습니다.");
 	}
+	
 	public void empmanagement() {
 		System.out.println("=====================================================================================");
 		System.out.println("                                 직원 계정 관리               ");

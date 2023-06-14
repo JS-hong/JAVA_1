@@ -16,12 +16,11 @@ public class HotelDnsDAO {
 	private ResultSet rs;
 	Connection con = DBConn.getConnection() ;
 	
-	
 	public List<HotelDnsVO> dnslist() {
 		List<HotelDnsVO> dvolist=new ArrayList<>();
 		HotelDnsVO dvo =null;
 		try {
-			query="SELECT d.dno, d.rno, d.dreason, e.ename, d.dnsdate"
+			query="SELECT d.rno, d.dreason, e.ename, d.dnsdate"
 					+ " FROM HotelDns d INNER JOIN HotelEmp e"
 					+ " ON d.ecode = e.ecode";	
 			pstmt=DBConn.getConnection().prepareStatement(query);
@@ -29,7 +28,6 @@ public class HotelDnsDAO {
 			rs=pstmt.executeQuery();			
 			while(rs.next()==true) {//조회된 레코드가 있다면 MemberVo 객체 생성하여 해당 레코드 값 저장
 				dvo=new HotelDnsVO();
-				dvo.setDno(rs.getInt("dno"));
 				dvo.setDreason(rs.getString("dreason"));
 				dvo.setDnsdate(rs.getDate("dnsdate"));
 				dvo.setEname(rs.getString("ename"));
@@ -48,14 +46,13 @@ public class HotelDnsDAO {
 	public HotelDnsVO dnsdetail(int dno) {
 		HotelDnsVO dvo =null;
 		try {
-			query="SELECT d.dno, d.rno, d.dreason,d.ecode, e.ename, d.dnsdate"
+			query="SELECT d.rno, d.dreason,d.ecode, e.ename, d.dnsdate"
 					+ " FROM HotelDns d INNER JOIN HotelEmp e ON d.ecode = e.ecode WHERE rno=?";	
 			pstmt=DBConn.getConnection().prepareStatement(query);
 			pstmt.setInt(1, dno);
 			rs=pstmt.executeQuery();			
 			if(rs.next()==true) {//조회된 레코드가 있다면 MemberVo 객체 생성하여 해당 레코드 값 저장
 				dvo=new HotelDnsVO();
-				dvo.setDno(rs.getInt("dno"));
 				dvo.setDreason(rs.getString("dreason"));
 				dvo.setEcode(rs.getString("ecode"));
 				dvo.setEname(rs.getString("ename"));
@@ -72,9 +69,9 @@ public class HotelDnsDAO {
 	}
 	
 	public boolean dnsinsert(HotelDnsVO dvo) {//직원 정보 추가
-		boolean boo=true;
+		boolean boo=false;
 	      try {
-	         query = "INSERT INTO HotelDns (dno, dreason, dnsdate, ecode, rno) VALUES (HOTELDNS_SEQ.NEXTVAL,?, SYSDATE, ?, ?)";
+	         query = "INSERT INTO HotelDns (dreason, dnsdate, ecode, rno) VALUES (?, SYSDATE, ?, ?)";
 	         
 	         pstmt = DBConn.getConnection().prepareStatement(query);
 	         pstmt.setString(1, dvo.getDreason());
@@ -83,13 +80,17 @@ public class HotelDnsDAO {
 	        
 	         
 	         int result = pstmt.executeUpdate();
-	         if(result !=0) {
+	         if(result ==1 ) {
 	            boo= true;
 	         } else {
-	            boo= false;
+	        	 boo=false;
 	         }
 	      } catch (SQLException e) {
-	         e.printStackTrace();
+	    	  if (e.getErrorCode() == 1) {
+	              System.out.println("이미 등록된 방 호수입니다.");
+	          } else {
+	              e.printStackTrace();
+	          } 
 	      } finally {
 	         DBConn.close(pstmt);
 	      }
@@ -98,12 +99,12 @@ public class HotelDnsDAO {
 	
 	public boolean dnsupdate(HotelDnsVO dvo) {//직원 정보 업데이트
 		try {
-			query="UPDATE HotelDns SET rno=?,dreason=?,ecode=?,dnsdate=SYSDATE WHERE dno=?";	
+			query="UPDATE HotelDns SET rno=?,dreason=?,ecode=?,dnsdate=SYSDATE WHERE rno=?";	
 			pstmt=DBConn.getConnection().prepareStatement(query);
 			pstmt.setInt(1, dvo.getRno());
 			pstmt.setString(2, dvo.getDreason());
 			pstmt.setString(3, dvo.getEcode());
-			pstmt.setInt(4, dvo.getDno());
+			pstmt.setInt(4, dvo.getRno());
 			
 			
 			 int result = pstmt.executeUpdate();

@@ -3,19 +3,13 @@ package hotel.vo;
 import java.util.Date;
 
 public class HotelDnsVO {
-	private int dno;//DNS등록번호
 	private int rno;//방번호
 	private String dreason;//DNS사유
 	private String ecode;//등록자번호
 	private Date dnsdate;//DNS등록 날짜
 	private String ename;//등록자 이름
 	public HotelDnsVO() {}
-	public int getDno() {
-		return dno;
-	}
-	public void setDno(int dno) {
-		this.dno = dno;
-	}
+	
 	public int getRno() {
 		return rno;
 	}

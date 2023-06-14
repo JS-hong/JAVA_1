@@ -34,7 +34,7 @@ public class HotelEmpDAO {
 				evo.setEage(rs.getInt("eage"));
 				evo.setEphone(rs.getString("ephone"));
 				evo.setEjob(rs.getString("ejob"));
-				System.out.println(rs.getString("ename"));
+				
 				
 				//List객체에 추가
 				evolist.add(evo);
@@ -85,13 +85,15 @@ public class HotelEmpDAO {
 			if(rs.next()==true) {//조회된 레코드가 있다면 MemberVo 객체 생성하여 해당 레코드 값 저장
 				if(rs.getString(1).equals("ADM")) {
 					job1= "ADM";
-				}else {
+				}else if(rs.getString(1).equals("EMP")){
 					job1= "EMP";
-				}
-				
+				}	
+			}else {
+				job1="a";
 			}
 			} catch (SQLException e) {
 			e.printStackTrace();
+				
 		}finally {
 			DBConn.close(pstmt,rs);
 		}
