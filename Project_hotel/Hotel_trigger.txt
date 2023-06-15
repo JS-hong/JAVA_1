@@ -50,7 +50,7 @@ Create or replace trigger insert_sum_price
 after insert on HotelFoodOrder
 for each row
 begin
-update CoustomerDB set rsv_total = rsv_total+:new.price
+update Customer set rsv_total = rsv_total+:new.price
 where rno = :new.rno ;
 end;
 
