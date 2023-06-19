@@ -37,9 +37,9 @@ public class HotelRoomControlDAO {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DBConn.close(stmt,rs);
+			DBConn.close(pstmt,rs);
 		}
-		System.out.println(RoomList);
+//		System.out.println(RoomList);
 		return RoomList;
 	}	
 	public ArrayList<HotelRoomControlVO> search_room(int num) {//개별 객실 정보 조회 - select 1개만\

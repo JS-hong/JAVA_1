@@ -39,20 +39,21 @@ public class HotelRoomInfoDAO {//
 		}		
 		return result;
 	}
-	public boolean checkout(int rno) {//체크아웃 접수 delete int만 받아서 삭제
+	public int checkout(int rno) {//체크아웃 접수 delete int만 받아서 삭제
+		int result=0;
 		try {
 			String query="delete from customer "
 					+ "where rno=? ";
 			pstmt = DBConn.getConnection().prepareStatement(query);
 			pstmt.setInt(1,rno);
-			int result = pstmt.executeUpdate();
+			result = pstmt.executeUpdate();
 
 		}catch (SQLException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}finally{
 			DBConn.close(pstmt);
 		}		
-		return true;
+		return result;
 	}
 	public ArrayList<HotelRoomInfoVO> check_roomlist() {//전체 객실 예약 정보 select
 		ArrayList<HotelRoomInfoVO> check_roomList = new ArrayList<>();
@@ -156,8 +157,49 @@ public class HotelRoomInfoDAO {//
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally { 
-			DBConn.close(pstmt,rs);
+			DBConn.close(pstmt,rs) ;
 		}
 		return true;
 	}
+	public ArrayList<HotelRoomInfoVO> checkout_select(int num) {//퇴실 처리 과정
+		ArrayList<HotelRoomInfoVO> checkres = new ArrayList<>();
+		try {
+			sql = "select rno,cname,out_date,rsv_total from customer where rno=? ";
+			pstmt = DBConn.getConnection().prepareStatement(sql);
+			pstmt.setInt(1,num);
+			rs = pstmt.executeQuery();
+			while (rs.next() == true) {
+				hrivo = new HotelRoomInfoVO();
+				hrivo.setRno((rs.getInt(1)));	
+				hrivo.setCname((rs.getString(2)));
+				hrivo.setCout_date((rs.getDate(3)));	
+				hrivo.setRoomservice_total((rs.getInt(4)));
+				checkres.add(hrivo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally { 
+			DBConn.close(pstmt,rs);
+		}
+		return checkres;
+	}
+	
+	
+	public int clean_update(int rno,String str) {
+		int result=0;
+		try {
+			sql = "update roomhistory set room_clean=? "
+					+"where rno=?";
+			pstmt = DBConn.getConnection().prepareStatement(sql);
+			pstmt.setString(1,str);
+			pstmt.setInt(2,rno);
+			result = pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally { 
+			DBConn.close(pstmt,rs) ;
+		}
+		return result;
+	}
+	
 }

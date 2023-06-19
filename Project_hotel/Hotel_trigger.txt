@@ -127,3 +127,25 @@ where rno = :old.rno ;
 update roomhistory set dns_check='1'
 where rno = :new.rno ;
 end;
+
+sequence
+
+CREATE SEQUENCE foodorder_seq
+INCREMENT BY 1
+START WITH 1
+MAXVALUE 99999;
+
+
+CREATE SEQUENCE HotelNotice_seq
+INCREMENT BY 1
+START WITH 1
+MAXVALUE 9999999
+NOCYCLE
+NOCACHE;
+
+CREATE SEQUENCE HotelReq_seq
+INCREMENT BY 1
+START WITH 1
+MAXVALUE 9999999
+NOCYCLE
+NOCACHE;

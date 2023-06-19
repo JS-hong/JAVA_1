@@ -6,10 +6,13 @@ public class HotelCustomerRequestVO {
 
 	private int num; //요청사항 등록번호
 	private int category; //카테고리 항목
+	private int newcategory; //변경할 카테고리
+
 	private int rno; //객실호수
 	private String reqMessage; //요청사항
 	private Date reqDate; //요청일
 	private String ecode; //sessionid (고객요청작성자)
+	private String ename; //작성자이름
 	
 	public HotelCustomerRequestVO() {
 		
@@ -22,6 +25,7 @@ public class HotelCustomerRequestVO {
 		this.rno = rno;
 		this.reqMessage = reqMessage;
 		this.ecode = ecode;
+		this.ename = ename;
 		this.reqDate = reqDate;
 	}
 
@@ -71,6 +75,21 @@ public class HotelCustomerRequestVO {
 
 	public void setReqDate(Date reqDate) {
 		this.reqDate = reqDate;
+	}
+
+	public String getEname() {
+		return ename;
+	}
+
+	public void setEname(String ename) {
+		this.ename = ename;
+	}
+	public int getNewcategory() {
+		return newcategory;
+	}
+
+	public void setNewcategory(int newcategory) {
+		this.newcategory = newcategory;
 	}
 
 }

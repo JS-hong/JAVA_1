@@ -1,3 +1,6 @@
+[홍진성]
+
+//테이블명 : Room
 create table Room(
 rno number primary key,
 room_type varchar2(10) not null,
@@ -5,27 +8,110 @@ room_price number not null,
 max_value number not null
 );
 
-//
+
+//테이블명 : RoomHistory
 create table RoomHistory(
-rno number not null, 
+rno number primary key, 
 room_clean varchar2(10) not null,
 dns_check varchar2(10)not null,
 check_in varchar2(10) not null,
-CONSTRAINT fk1_rno foreign key(rno) references Room(rno)
-REFERENCES room(rno) on delete cascade
-);
+CONSTRAINT fk1_rno foreign key(rno) references Room(rno) on delete cascade);
 
+
+
+//테이블명 : Customer
 create table Customer(
-rno number not null,
+rno number primary key,
 cname varchar2(30), 
 cphone varchar2(13), 
 cemail varchar2(30),
 in_date DATE not null,
 out_date DATE not null,
 rsv_total number not null,
-CONSTRAINT fk2_rno foreign key(rno) references Room(rno)
+CONSTRAINT fk2_rno foreign key(rno) references Room(rno) on delete cascade);
 );
 
 
-alter table Customer add constraint unic unique(rno);
-alter table RoomHistory add constraint unihis unique(rno);
+[정승호]
+
+//테이블명 : HotelEmp
+CREATE TABLE HotelEmp (
+    ecode VARCHAR2(6) PRIMARY KEY NOT NULL,
+    ename VARCHAR2(10),
+    eage NUMBER(3),
+    egender VARCHAR2(3),
+    eemail VARCHAR2(50),
+    ephone VARCHAR2(11) NOT NULL,
+    ejob VARCHAR2(3) NOT NULL
+);
+
+
+//테이블명 : HotelDNS
+CREATE TABLE HotelDns (
+    dreason VARCHAR2(50),
+    dnsdate DATE,
+    ecode VARCHAR2(6),
+    rno NUMBER NOT NULL,
+    FOREIGN KEY (ecode) REFERENCES HotelEmp(ecode),
+    FOREIGN KEY (rno) REFERENCES Room(rno)
+);
+
+ALTER TABLE hoteldns
+ADD CONSTRAINT dns_uni UNIQUE (rno);
+
+
+[노지연]
+
+//테이블명 : HotelNotice
+CREATE TABLE HotelNotice (
+	num	NUMBER	NOT NULL PRIMARY KEY,
+	title	VARCHAR2(100char)	NULL,
+	content	VARCHAR2(1000char)	NULL,
+	noticeDate	DATE	NULL,
+    ecode varchar2(6) NULL,
+    FOREIGN KEY (ecode) REFERENCES HotelEmp(ecode)
+);
+
+
+//테이블명 : HotelReq
+CREATE TABLE HotelReq (
+	num	NUMBER	NOT NULL,
+	category	NUMBER	NULL,
+	reqDate	DATE	NULL,
+    ecode varchar2(6) NULL,
+    rno number null,
+	FOREIGN KEY (ecode) REFERENCES HotelEmp(ecode),
+	FOREIGN key(rno) REFERENCES Room(rno),
+	reqMessage	VARCHAR2(100char)	NULL,
+	PRIMARY KEY (num, category)
+);
+
+
+//테이블명 : HotelFood
+
+CREATE TABLE hotelfood (
+	foodNum NUMBER NOT NULL,
+	foodName VARCHAR2(999),
+	price NUMBER,
+	foodCategory NUMBER,
+	PRIMARY KEY (foodNum, foodCategory)
+);
+
+
+//테이블명 : HotelFoodOrder
+
+CREATE TABLE hotelfoodorder (
+  foodOrderNo NUMBER primary key,
+  foodCategory NUMBER NULL,
+  foodAmount NUMBER NULL,
+  foodDate DATE NULL,
+  ecode VARCHAR2(6) NULL,
+  rno NUMBER NOT NULL,
+  price NUMBER NULL,
+  foodNum NUMBER NOT NULL,
+  foodName VARCHAR2(999) NULL,
+  ename VARCHAR2(10) NULL,
+  FOREIGN KEY (foodNum, foodCategory) REFERENCES HotelFood(foodNum, foodCategory),
+  FOREIGN KEY (rno) REFERENCES Room(rno),
+  FOREIGN KEY (ecode) REFERENCES HotelEmp(ecode)
+);

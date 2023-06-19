@@ -43,18 +43,19 @@ public class HotelMain {
 	}
 	
 	public void mainmenu(){//로그인과 시스템 종료 메뉴
-		System.out.println("=====================================================================================");
-		System.out.println("                                HOTEL SYSTEM           ");
-		System.out.println("=====================================================================================");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("                                                           HOTEL SYSTEM           ");
+		System.out.println("==================================================================================================================================================");
 		System.out.println("   1.로그인");
 		System.out.println("   2.시스템 종료");
-		System.out.print("   >>선택:");
+		System.out.println();
+		System.out.print("   >> 선택:");
 		int a=sc.nextInt();
 		switch(a) {
 		case 1: login(); break;
 		case 2:
 			
-			System.out.println("=====================================================================================");
+			System.out.println("==================================================================================================================================================");
 			System.out.println("      시스템을 종료합니다.     ");
 			sc.close();
 			//DBConn.close();
@@ -66,9 +67,9 @@ public class HotelMain {
 	}
 	
 	public void menuadmin(){//관리자 메뉴
-		System.out.println("=====================================================================================");
-		System.out.println("                                  관리자 메뉴          ");
-		System.out.println("=====================================================================================");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("                                                             관리자 메뉴          ");
+		System.out.println("==================================================================================================================================================");
 		System.out.println("   1.객실 정보 관리 화면");
 		System.out.println("   2.객실 관리 화면");
 		System.out.println("   3.음식 메뉴 관리");
@@ -78,7 +79,8 @@ public class HotelMain {
 		System.out.println("   7.직원 관리");
 		System.out.println("   8.공지사항");
 		System.out.println("   9.로그아웃");
-		System.out.print("   >>선택:");
+		System.out.println();
+		System.out.print("   >> 선택:");
 		int a=sc.nextInt();
 		switch(a) {
 		case 1: rcmain.Roomcontrolmain(); break;
@@ -88,7 +90,7 @@ public class HotelMain {
 		case 5: crmain.menu(sessioncode, sessionjob); break;
 		case 6: dmain.dnsmenu(sessioncode, sessionjob); break;
 		case 7: empmanagement(); break;
-		case 8: nmain.listadm(); break;
+		case 8: nmain.listadm(sessioncode, sessionjob); break;
 		case 9: logout(); break;
 		default: 
 			System.out.println("  다시 입력해 주세요.");
@@ -98,16 +100,17 @@ public class HotelMain {
 	}
 	
 	public void menuemp(){//직원 메뉴	
-		System.out.println("=====================================================================================");
-		System.out.println("                                 직원 메뉴          ");
-		System.out.println("=====================================================================================");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("                                                              직원 메뉴          ");
+		System.out.println("==================================================================================================================================================");
 		System.out.println("   1.객실 관리 화면");
 		System.out.println("   2.DNS");
 		System.out.println("   3.음식 주문 관리");
 		System.out.println("   4.고객 요청");
 		System.out.println("   5.공지사항");
 		System.out.println("   6.로그아웃");
-		System.out.print("   >>선택:");
+		System.out.println();
+		System.out.print("   >> 선택:");
 		int a=sc.nextInt();
 		switch(a) {
 		case 1: rimain.infomain(sessionjob); break;
@@ -125,12 +128,12 @@ public class HotelMain {
 	}
 	
 	public void login() {//로그인 메서드(임시) 
-		System.out.println("=====================================================================================");
-		System.out.println("                                   LOGIN                 ");
-		System.out.println("=====================================================================================");
-		System.out.print("   직원번호 입력:");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("                                                                 LOGIN                 ");
+		System.out.println("==================================================================================================================================================");
+		System.out.print("   >> 직원번호 입력:");
 		String code=sc.next();		
-		System.out.print("   핸드폰 번호 입력:");
+		System.out.print("   >> 핸드폰 번호 입력:");
 		String phone=sc.next();
 		
 			
@@ -154,17 +157,21 @@ public class HotelMain {
 	public void logout() {//로그아웃
 		sessioncode=null;
 		sessionjob=null;
-		System.out.println("=====================================LOGOUT=========================================");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("                                                                LOGOUT                 ");
+		System.out.println("==================================================================================================================================================");
 		System.out.println("계정이 로그아웃 되었습니다.");
 	}
 	
 	public void empmanagement() {
-		System.out.println("=====================================================================================");
-		System.out.println("                                 직원 계정 관리               ");
-		System.out.println("=====================================================================================");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("                                                              직원 계정 관리                 ");
+		System.out.println("==================================================================================================================================================");
 		System.out.println("   1.직원 전체 목록");
 		System.out.println("   2.직원 정보 추가");
 		System.out.println("   3.뒤로가기");
+		System.out.println();
+		System.out.println("   >> 선택:");
 		int a=sc.nextInt();
 		switch(a) {
 		case 1:emplist(); break;
@@ -179,10 +186,11 @@ public class HotelMain {
 	public void emplist() {//직원 리스트
 		
 		List<HotelEmpVO> emplist=edao.emplist();
-		System.out.println("=====================================================================================");
-		System.out.println("                              MEMBER LIST   ");
-		System.out.println("=====================================================================================");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("                                                            MEMBER LIST                 ");
+		System.out.println("==================================================================================================================================================");
 		System.out.println(" 직원번호\t이름\t나이\t전화번호\t\t직책");
+		System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------");
 		if(emplist.size()>0) {
 			for (HotelEmpVO evo : emplist) {
 	
@@ -190,8 +198,12 @@ public class HotelMain {
 						"\t"+evo.getEage()+"\t"+evo.getEphone()+
 						"\t"+evo.getEjob());
 			}
-			System.out.println("=====================================================================================");
-				System.out.println("   1.상세보기   2.뒤로가기  ");
+			System.out.println("==================================================================================================================================================");
+				System.out.println("   1.상세보기");
+				System.out.println("   2.뒤로가기");
+				System.out.println();
+				System.out.println("   >> 선택:");
+				
 				int a=sc.nextInt();
 				switch(a) {
 				case 1:empdetail();
@@ -201,31 +213,32 @@ public class HotelMain {
 					   case 2:empremove();break;
 					   case 3:emplist();break;
 					   default:
-						   System.out.println("  다시 입력해 주세요.");
+						   System.out.println("   >> 다시 입력해 주세요.");
 						   empdetail();
 						   break;
 					   }
 				break;
 				case 2:empmanagement(); break;
 				default: 
-					System.out.println("  다시 입력해 주세요.");
+					System.out.println("   >> 다시 입력해 주세요.");
 					emplist();
 					break;
 				}
 			
 			}else {
-				System.out.println("해당 아이디가 존재하지 않습니다.");
+				System.out.println("   >> 해당 아이디가 존재하지 않습니다.");
 				empmanagement();
 			}
 	}
 	public void empdetail() {//직원 상세보기
-		System.out.println("=====================================================================================");
-		System.out.println("                                 MEMBER INFO   ");
-		System.out.println("=====================================================================================");
-		System.out.print("     조회 아이디 : ");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("                                                               MEMBER INFO   ");
+		System.out.println("==================================================================================================================================================");
+		System.out.print("   >> 조회할 직원번호 : ");
 		String ecode=sc.next(); //조회하고 싶은 아이디
 		evo=edao.empdetail(ecode);//값을 vo로 넘겨줌
 		if(evo != null) {
+		System.out.println();
 		System.out.println("     직원번호 : "+evo.getEcode());
 		System.out.println("     이름 : "+evo.getEname());
 		System.out.println("     나이 : "+evo.getEage());
@@ -233,31 +246,32 @@ public class HotelMain {
 		System.out.println("     전화번호 : "+evo.getEphone());
 		System.out.println("     이메일 : "+evo.getEemail());
 		System.out.println("     직책 : "+evo.getEjob());
-		System.out.println("=====================================================================================");
+		System.out.println("==================================================================================================================================================");
 		System.out.println("   1. 정보 수정   2. 정보 삭제   3.뒤로가기");
-		System.out.print("     >>선택:");
+		System.out.println();
+		System.out.print("   >> 선택:");
 		}else {
 			System.out.println("해당 아이디가 존재하지 않습니다.");
 			emplist();
 		}
 	}
 	public void empjoin() {//직원정보 추가
-		System.out.println("=====================================================================================");
-		System.out.println("                                 MEMBER JOIN   ");
-		System.out.println("=====================================================================================");
-		System.out.print("직원번호(6자리) :");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("                                                            MEMBER JOIN   ");
+		System.out.println("==================================================================================================================================================");
+		System.out.print("   >> 직원번호(6자리) :");
 		String joincode=sc.next();
-		System.out.print("회원이름 :");
+		System.out.print("   >> 회원이름 :");
 		evo.setEname(sc.next());
-		System.out.print("나이 :");
+		System.out.print("   >> 나이 :");
 		evo.setEage(sc.nextInt());
-		System.out.print("성별(남/여) :");
+		System.out.print("   >> 성별(남/여) :");
 		String joingender=sc.next();
-		System.out.print("이메일 :");
+		System.out.print("   >> 이메일 :");
 		evo.setEemail(sc.next());
-		System.out.print("전화번호 :");
+		System.out.print("   >> 전화번호 :");
 		evo.setEphone(sc.next());	
-		System.out.print("직책(ADM/EMP) :");
+		System.out.print("   >> 직책(ADM/EMP) :");
 		String joinjob=sc.next();
 		String joinjob2= joinjob.toUpperCase();
 		
@@ -268,15 +282,17 @@ public class HotelMain {
 			evo.setEjob(joinjob2);
 			int result = edao.empinsert(evo);
 			if(result==1) {
-				System.out.println("=====================================================================================");
-				System.out.println("회원가입 완료");
+				System.out.println("==================================================================================================================================================");
+				System.out.println("   >> 회원가입 완료");
+				menuadmin();
 			}else {
-				System.out.println("=====================================================================================");
-				System.out.println("회원가입 실패");
+				System.out.println("==================================================================================================================================================");
+				System.out.println("   >> 회원가입 실패");
+				menuadmin();
 			}	
 		}else {
-			System.out.println("=====================================================================================");
-			System.out.println("다시 입력해 주세요.");
+			System.out.println("==================================================================================================================================================");
+			System.out.println("   >> 다시 입력해 주세요.");
 			empjoin();
 		}
 		
@@ -285,43 +301,43 @@ public class HotelMain {
 	}
 	
 	public void empmodify() {//직원 수정
-		System.out.println("=====================================================================================");
-		System.out.println("                                MEMBER UPDATE   ");
-		System.out.println("=====================================================================================");
-		System.out.println("정보를 수정합니다.");		
-		System.out.print("     이름 : ");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("                                                              MEMBER UPDATE   ");
+		System.out.println("==================================================================================================================================================");
+		System.out.println("   >> 정보를 수정합니다.");		
+		System.out.print("   >> 이름 : ");
 		evo.setEname(sc.next());
-		System.out.print("     나이 : ");
+		System.out.print("   >> 나이 : ");
 		evo.setEage(sc.nextInt());
-		System.out.print("     이메일 : ");
+		System.out.print("   >> 이메일 : ");
 		evo.setEemail(sc.next());
-		System.out.print("     전화번호 : ");
+		System.out.print("   >> 전화번호 : ");
 		evo.setEphone(sc.next());
 		edao.empupdate(evo);
 		
 		if(evo != null) {
-			System.out.println("=====================================================================================");
-			System.out.println("     수정되었습니다.");
+			System.out.println("==================================================================================================================================================");
+			System.out.println("   >> 수정되었습니다.");
 			emplist();
 	}
 	}
 	public void empremove() {//직원 삭제
-		System.out.println("=====================================================================================");
-		System.out.print("해당 정보를 삭제하시겠습니까?(Y/N) : ");
+		System.out.println("==================================================================================================================================================");
+		System.out.print("   >> 해당 정보를 삭제하시겠습니까?(Y/N) : ");
 		char yon=sc.next().charAt(0);
 		switch(yon) {
 		case 'y': case 'Y':
 			edao.empdelete(evo.getEcode());
-			System.out.println("=====================================================================================");
-			System.out.println("       삭제되었습니다.");
+			System.out.println("==================================================================================================================================================");
+			System.out.println("   >> 삭제되었습니다.");
 			emplist();
 		case 'n': case 'N':
-			System.out.println("=====================================================================================");
-			System.out.println("       목록으로 돌아갑니다.");
+			System.out.println("==================================================================================================================================================");
+			System.out.println("   >> 목록으로 돌아갑니다.");
 			emplist();
 		default :
-			System.out.println("=====================================================================================");
-			System.out.println("      다시 입력해 주세요.");
+			System.out.println("==================================================================================================================================================");
+			System.out.println("   >> 다시 입력해 주세요.");
 			empremove();
 		}
 		

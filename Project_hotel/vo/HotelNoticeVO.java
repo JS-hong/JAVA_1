@@ -6,7 +6,8 @@ import java.util.Date;
 public class HotelNoticeVO {
 
 	private int num; //공지사항 등록번호
-	private String ecode; //sessionid (공지사항작성자) 
+	private String ecode; //sessionid (공지사항작성자)
+	private String ename; //작성자 이름
 	private String title; //공지사항제목
 	private String content; //공지사항내용
 	private Date noticeDate; //공지등록날짜
@@ -22,6 +23,7 @@ public class HotelNoticeVO {
 		this.content = content;
 		this.noticeDate = noticeDate;
 		this.ecode = ecode;
+		this.ename = ename;
 	}
 
 	public String getEcode() {
@@ -63,5 +65,14 @@ public class HotelNoticeVO {
 	public void setNoticeDate(Date noticeDate) {
 		this.noticeDate = noticeDate;
 	}
+
+	public String getEname() {
+		return ename;
+	}
+
+	public void setEname(String ename) {
+		this.ename = ename;
+	}
+	
 
 }

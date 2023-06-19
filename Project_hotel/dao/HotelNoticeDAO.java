@@ -3,8 +3,8 @@ package hotel.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 import hotel.jdbc.DBConn;
 import hotel.vo.HotelNoticeVO;
@@ -31,7 +31,10 @@ public class HotelNoticeDAO {
 
 		try {
 			// select 쿼리
-			query = "SELECT * FROM HotelNotice";
+			query = " SELECT HotelNotice.*, HotelEmp.ename "
+					+ " FROM HotelNotice "
+					+ " JOIN HotelEmp ON HotelNotice.ecode = HotelEmp.ecode "
+					+ " ORDER BY num DESC ";
 			pstmt = DBConn.getConnection().prepareStatement(query);
 			
 			rs = pstmt.executeQuery(); //쿼리 결과 저장
@@ -42,7 +45,7 @@ public class HotelNoticeDAO {
 				noticevo = new HotelNoticeVO(); //VO 객체 생성
 				noticevo.setNum(rs.getInt("num"));
 				noticevo.setTitle(rs.getString("title"));
-				noticevo.setEcode(rs.getString("ecode"));
+				noticevo.setEname(rs.getString("ename"));
 				noticevo.setNoticeDate(rs.getDate("noticeDate"));			
 				
 				noticevoList.add(noticevo); //List 객체에 추가
@@ -67,7 +70,10 @@ public class HotelNoticeDAO {
 		
 		try {
 			// select 쿼리 넣기
-			query = " SELECT * FROM HotelNotice WHERE num =? ";
+			query = " SELECT HotelNotice.*, HotelEmp.ename "
+					+ " FROM HotelNotice "
+					+ " JOIN HotelEmp ON HotelNotice.ecode = HotelEmp.ecode "
+					+ " WHERE num =? ";
 			pstmt = DBConn.getConnection().prepareStatement(query); //2. getconnection으로 받아온다
 			pstmt.setInt(1, num); //	3. mno 바인딩해서 가져온다.		
 			rs = pstmt.executeQuery(); //4. 쿼리 결과 저장
@@ -76,7 +82,7 @@ public class HotelNoticeDAO {
 				noticevo = new HotelNoticeVO(); //VO 객체 생성
 				noticevo.setTitle(rs.getString("title"));
 				noticevo.setContent(rs.getString("content"));
-				noticevo.setEcode(rs.getString("ecode"));
+				noticevo.setEname(rs.getString("ename"));
 				noticevo.setNoticeDate(rs.getDate("noticeDate"));			
 				
 			}
@@ -95,7 +101,9 @@ public class HotelNoticeDAO {
 		try {
 			// insert 쿼리 넣기
 			
-			query = " INSERT INTO HotelNotice (num, title, content, ecode, noticeDate) VALUES(HotelNotice_seq.nextval, ?, ?, ?, sysdate) ";
+			query = " INSERT INTO HotelNotice (num, title, content, ecode, noticeDate) "
+					+ " VALUES((SELECT COALESCE(MAX(num) + 1, 1) FROM HotelNotice), ?, ?, ?, sysdate) ";
+			
 			pstmt = DBConn.getConnection().prepareStatement(query); // getConnection이 static이므로 참조변수 필요X
 			pstmt.setString(1, noticevo.getTitle());
 			pstmt.setString(2, noticevo.getContent());
@@ -119,12 +127,13 @@ public class HotelNoticeDAO {
 //	ADM_015	공지사항 수정화면
 //	공지사항의 제목과 내용을 수정할 수 있도록 한다.
 		try {
-			query = " UPDATE HotelNotice SET title=?, content=? WHERE num=? ";
+			query = " UPDATE HotelNotice SET title=?, content=?, ecode=?, noticeDate=sysdate WHERE num=? ";
 
 			pstmt = DBConn.getConnection().prepareStatement(query); // getConnection이 static이므로 참조변수 필요X
 			pstmt.setString(1, noticevo.getTitle());
 			pstmt.setString(2, noticevo.getContent());
-			pstmt.setInt(3, noticevo.getNum());
+			pstmt.setString(3, noticevo.getEcode());
+			pstmt.setInt(4, noticevo.getNum());
 			
 			int result = pstmt.executeUpdate();
 

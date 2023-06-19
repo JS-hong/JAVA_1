@@ -12,8 +12,6 @@ import hotel.vo.HotelFoodOrderVO;
 
 //음식 주문 DB
 public class HotelFoodOrderDAO { 
-   
-   
    private String query; 
    private Statement stmt;
    private PreparedStatement pstmt;   // 매개변수(ex.아이디, 이름)가 있는 경우에는 pstmt를 사용하는 것이 적합
@@ -39,9 +37,9 @@ public class HotelFoodOrderDAO {
       
       try {
          // insert 쿼리문
-         query = "INSERT INTO HotelFoodOrder(foodOrderNo, rno, foodCategory, foodNum, foodName, foodAmount, price, ecode, ename, foodDate)"
+         query = "INSERT INTO HotelFoodOrder(foodOrderNo, rno, foodCategory, foodNum, foodName, foodAmount, price, ecode, foodDate)"
                + " VALUES (FOODORDER_SEQ.NEXTVAL,?,?,?,(SELECT foodName FROM HotelFood WHERE foodCategory=? and foodNum=?), ?, "
-               + " (? * (SELECT price FROM HotelFood WHERE foodCategory=? and foodNum=?)), ? , (SELECT ename FROM HotelEmp WHERE ecode=?), SYSDATE)";
+               + " (? * (SELECT price FROM HotelFood WHERE foodCategory=? and foodNum=?)), ? ,SYSDATE)";
          
          // DBConn에 싱글톤패턴으로 만들어둔 커넥션 사용
          // 커넥션을 변수에 담아서 쓸 것인지, 그 때 그 때 getConnection을 호출해서 사용할지는 자유
@@ -56,7 +54,6 @@ public class HotelFoodOrderDAO {
          pstmt.setInt(8, ovo.getFoodCategory());   //foodAmount 활용해서 price 조회하는 과정
          pstmt.setInt(9, ovo.getFoodNum());   //foodNum 활용해서 price 조회하는 과정
          pstmt.setString(10, ovo.getEcode());
-         pstmt.setString(11, ovo.getEcode());
          
          int execute = pstmt.executeUpdate();   // executeUpdate가 잘 되면, 성공 실행 건수 1이 반환됨
 
@@ -83,7 +80,8 @@ public class HotelFoodOrderDAO {
       
       try {
          // 전체조회 쿼리
-         query = "SELECT * FROM HotelFoodOrder order by foodOrderNo asc";
+         query = "SELECT o.foodOrderNo, o.rno, o.foodCategory, o.foodNum, o.foodName, o.foodAmount, o.price, o.ecode, o.foodDate, e.ename"
+         	   + " FROM HotelFoodOrder o INNER JOIN HotelEmp e On o.ecode = e.ecode order by o.foodOrderNo asc";
          pstmt = DBConn.getConnection().prepareStatement(query);      // 바인딩할 게 없어서 Statement 사용하면 더 편함
          
          rs = pstmt.executeQuery();      // select이므로 ResultSet 객체 필요
@@ -124,7 +122,8 @@ public class HotelFoodOrderDAO {
 
       try {
          // select 쿼리문
-         query = "SELECT * FROM HotelFoodOrder WHERE foodOrderNo=?";
+         query = "SELECT o.foodOrderNo, o.rno, o.foodCategory, o.foodNum, o.foodName, o.foodAmount, o.price, o.ecode, o.foodDate, e.ename"
+        	   + " FROM HotelFoodOrder o INNER JOIN HotelEmp e On o.ecode = e.ecode WHERE o.foodOrderNo=?";
 
          pstmt = DBConn.getConnection().prepareStatement(query);
          pstmt.setInt(1, orderNum); // 물음표 바인딩
@@ -162,8 +161,7 @@ public class HotelFoodOrderDAO {
    
       try {         
          query = "UPDATE HotelFoodOrder SET rno=?, foodCategory=?, foodNum=?, foodName=(SELECT foodName FROM HotelFood WHERE foodCategory=? and foodNum=?) , "
-               + " foodAmount=?, price=(? * (SELECT price FROM HotelFood WHERE  foodCategory=? and foodNum=?)), ecode=?, "
-               + " ename=(SELECT ename FROM HotelEmp WHERE ecode=?), foodDate=SYSDATE"
+               + " foodAmount=?, price=(? * (SELECT price FROM HotelFood WHERE  foodCategory=? and foodNum=?)), ecode=? "
                + " WHERE foodOrderNo=?";
          
          // DBConn에 싱글톤패턴으로 만들어둔 커넥션 사용
@@ -179,8 +177,7 @@ public class HotelFoodOrderDAO {
          pstmt.setInt(8, ovo.getFoodCategory());
          pstmt.setInt(9, ovo.getFoodNum());
          pstmt.setString(10, ovo.getEcode());
-         pstmt.setString(11, ovo.getEcode());
-         pstmt.setInt(12, ovo.getFoodOrderNo());
+         pstmt.setInt(11, ovo.getFoodOrderNo());
          int execute = pstmt.executeUpdate();   // executeUpdate가 잘 되면, 성공 실행 건수 1이 반환됨
          if(execute==1) {
             return true;
@@ -199,17 +196,18 @@ public class HotelFoodOrderDAO {
    
    
    //음식 주문 내역 삭제 (단건조회 이후) D
-   public boolean delete (int orderNum) {
+   public boolean delete (int orderCategory, int orderNum) {
       try {
          
          // delete 쿼리문
-         query = "DELETE FROM HotelFoodOrder WHERE foodOrderNo=?";
+         query = "DELETE FROM HotelFoodOrder WHERE foodCategory=? and foodOrderNo=?";
          
          // DBConn에 싱글톤패턴으로 만들어둔 커넥션 사용
          // 커넥션을 변수에 담아서 쓸 것인지, 그 때 그 때 getConnection을 호출해서 사용할지는 자유
          pstmt = DBConn.getConnection().prepareStatement(query);      // prepareStatement는 쿼리를 미리 준비해뒀으니까 매개변수로 query받음
          
-         pstmt.setInt(1, orderNum);
+         pstmt.setInt(1, orderCategory);
+         pstmt.setInt(2, orderNum);
          int execute = pstmt.executeUpdate(); // executeUpdate가 잘 되면, 성공 실행 건수 1이 반환됨
          if (execute == 1) {
             return true;
