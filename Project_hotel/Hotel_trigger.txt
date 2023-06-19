@@ -1,9 +1,11 @@
+Trigger
+
 //방 추가 시 history 생성
 Create or replace trigger insert_room
 AFTER insert on room
 for each row
 begin
-insert into roomhistory(rno,room_clean,dns_check,check_in) 
+insert into roomhistory(rno,room_clean,dns_check,check_in)
 values(:new.rno,'inspect','0','0');
 END;
 
@@ -12,7 +14,7 @@ Create or replace trigger insert_checkin
 after insert on Customer
 for each row
 begin
-update roomhistory set room_clean='dirty',check_in='1' 
+update roomhistory set room_clean='dirty',check_in='1'
 where rno = :new.rno;
 end;
 
@@ -22,37 +24,77 @@ Create or replace trigger delete_checkout
 after delete on Customer 		
 for each row
 begin
-update roomhistory set check_in='0' 
-where rno=:new.rno;
+update roomhistory set check_in='0'
+where rno=:old.rno;
 end;
 
 //룸 체인지 했을때 원래 방 상태 변경하는 트리거)
 //원래 있던 방 dirty + check_IN 0으로 변경
-Create or replace trigger update_chroom_1
+create or replace trigger update_chroom
 after update on Customer
 for each row
 begin
-update roomhistory set room_clean='dirty',check_in='0' 
-where rno = :OLD.rno;
+IF :new.RNO <> :old.RNO THEN
+    update roomhistory set room_clean='dirty',check_in='1'
+    where rno = :new.rno;
+    update roomhistory set room_clean='dirty',check_in='0'
+    where rno = :OLD.rno;
+END IF;
 end;
-
-Create or replace trigger update_chroom_2
-after update on Customer
-for each row
-begin
-update roomhistory set room_clean='dirty',check_in='1' 
-where rno = :new.rno;
-end;
-
 
 //가격 추가 트리거
-Create or replace trigger insert_sum_price
-after insert on HotelFoodOrder
-for each row
-begin
-update Customer set rsv_total = rsv_total+:new.price
-where rno = :new.rno ;
-end;
+create or replace TRIGGER INSERT_PRICE
+BEFORE INSERT ON hotelfoodorder
+FOR EACH ROW
+DECLARE
+    v_rno NUMBER;
+	v_price NUMBER;
+BEGIN
+    v_rno := :NEW.rno;
+    v_price := :NEW.price;
+    UPDATE customer
+    SET rsv_total = rsv_total + v_price
+    WHERE rno = v_rno;
+END;
+
+//가격 수정 트리거
+create or replace TRIGGER UPDATE_PRICE
+BEFORE UPDATE ON hotelfoodorder
+FOR EACH ROW
+DECLARE
+    v_old_rno NUMBER;
+    v_new_rno NUMBER;
+	v_old_price NUMBER;
+    v_new_price NUMBER;
+BEGIN
+    v_new_rno := :new.rno;
+    v_new_price := :new.price;
+    v_old_rno := :old.rno;
+    v_old_price := :old.price;
+
+    UPDATE customer
+    SET rsv_total = (rsv_total - v_old_price)
+    WHERE rno = v_old_rno;
+    
+    UPDATE customer
+    SET rsv_total = (rsv_total + v_new_price)
+    WHERE rno = v_new_rno;
+END;
+
+//가격 삭제 트리거
+CREATE OR REPLACE TRIGGER DELETE_PRICE
+BEFORE DELETE ON hotelfoodorder
+FOR EACH ROW
+DECLARE
+    v_rno NUMBER;
+	v_price NUMBER;
+BEGIN
+    v_rno := :old.rno;
+    v_price := :old.price;
+    UPDATE customer
+    SET rsv_total = rsv_total - v_price
+    WHERE rno = v_rno;
+END;
 
 //DNS 방 등록됐을때 체크하는 트리거
 //dns 에서 업데이트 됐을때 변경
@@ -68,10 +110,20 @@ end;
 // dns 에서 업데이트 됐을때 변경
 Create or replace trigger delete_dns
 after delete on HotelDns
-declare
-dns_1 number
 for each row
 begin
 update roomhistory set dns_check = '0'
 where rno = :old.rno ;
+end;
+
+//dns 수정 트리거
+Create or replace trigger update_dns
+after update on HOTELDNS
+for each row
+begin
+update roomhistory set dns_check='0'
+where rno = :old.rno ;
+
+update roomhistory set dns_check='1'
+where rno = :new.rno ;
 end;
